@@ -32,18 +32,6 @@ RUN apt-get update && \
 
 FROM basedev as dev
 
-# For credentials/secret edit
-ENV EDITOR=nano \
-    BUNDLE_PATH=$APP_DIR/vendor/bundle \
-    BUNDLE_BIN=$APP_DIR/vendor/bundle/bin \
-    GEM_HOME=$APP_DIR/vendor/bundle
-
-ENV PATH="${BUNDLE_BIN}:${PATH}"
-
-RUN mkdir -p "$BUNDLE_PATH" && \
-    chown -R app "$BUNDLE_PATH" && \
-    gem install bundler -v "$BUNDLER_VERSION"
-
 USER app
 
 # https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls
@@ -72,11 +60,8 @@ RUN bundle install "-j$(nproc)" --retry 3 && \
 FROM base as live
 
 # We enable `BUNDLE_DEPLOYMENT` so that bundler won't take the liberty to upgrade any gems.
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    RAILS_LOG_TO_STDOUT="1" \
+ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_WITHOUT="development:test" \
-    RAILS_SERVE_STATIC_FILES="yes" \
     RUBYOPT='--disable-did_you_mean'
 
 # Workdir set in base image
@@ -87,10 +72,4 @@ COPY --chown=app:app . .ruby-version ./
 
 USER app
 
-# Precompiling assets without requiring secret RAILS_MASTER_KEY
-RUN bundle exec bootsnap precompile --gemfile app/ lib/ && \
-    SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
-
-EXPOSE 3000
-
-CMD ["bundle", "exec", "rails", "s"]
+ENTRYPOINT ["tini", "--", "bin/cli"]
