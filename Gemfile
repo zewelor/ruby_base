@@ -12,7 +12,6 @@ end
 
 group :development do
   gem "lefthook"
-  gem "reek"
   gem "standard"
   gem "bundler-audit"
 end
