@@ -5,8 +5,13 @@ services:
     build: 
       context: .
       target: dev
+    tty: true
+    stdin_open: true
     volumes:
+      - .:/app:cached
+      - bundler:/bundle
       - vscode:/home/app/.vscode-server
 
 volumes:
   vscode:
+  bundler:

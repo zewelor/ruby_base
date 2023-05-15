@@ -5,10 +5,8 @@ on:
   push:
 
 env:
-  DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
   COMPOSE_FILE: docker-compose.ci.yml
-  MIN_COVERAGE: 49
   # It counts some attestation etc packages, each commit gives 3 pckages
   OLD_VERSIONS_TO_KEEP: 75 # 25 commits
 

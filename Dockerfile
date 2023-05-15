@@ -32,10 +32,14 @@ RUN apt-get update && \
 
 FROM basedev as dev
 
+RUN mkdir -p "$BUNDLE_PATH" && \
+    chown -R app:app "$BUNDLE_PATH"
+
 USER app
 
 # https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls
-RUN mkdir -p "$HOME/.vscode-server/"
+RUN gem install bundler -v "$BUNDLER_VERSION" && \
+    mkdir -p "$HOME/.vscode-server/"
 
 FROM basedev as baseliveci
 
