@@ -3,7 +3,7 @@
   ignorePaths: [
     '.github/workflows',
   ],
-  baseBranches: ["*"]
+  baseBranches: ["*"],
   timezone: "Europe/Warsaw",
   vulnerabilityAlerts: {
     "enabled": true
