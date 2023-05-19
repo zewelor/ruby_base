@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+# https://github.com/fxn/zeitwerk#synopsis
 require "zeitwerk"
-Zeitwerk::Loader.for_gem
+loader = Zeitwerk::Loader.for_gem
+loader.setup # ready!
 
 begin
   require "dotenv/load"
