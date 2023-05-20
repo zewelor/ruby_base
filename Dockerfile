@@ -76,4 +76,4 @@ COPY --chown=app:app . .ruby-version ./
 
 USER app
 
-ENTRYPOINT ["tini", "--", "bin/cli"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "bin/cli"]
