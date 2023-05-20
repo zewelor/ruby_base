@@ -39,5 +39,6 @@ config/credentials/*.key
 
 /*.pdf
 /*.yml
+/*.ipynb
 
 Dockerfile
