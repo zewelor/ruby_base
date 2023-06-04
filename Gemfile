@@ -9,6 +9,7 @@ group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "faker"
   gem "dotenv"
+  gem "pry"
 end
 
 group :development do
