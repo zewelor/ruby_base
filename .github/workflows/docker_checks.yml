@@ -45,6 +45,9 @@ jobs:
           docker compose run app rubocop
 
   push_production:
+    permissions:
+      contents: read
+      packages: write
     needs:
       - tests
     if: github.ref == 'refs/heads/main'
