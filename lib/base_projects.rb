@@ -7,8 +7,10 @@ loader.setup # ready!
 
 begin
   require "dotenv/load"
+# rubocop:disable Lint/SuppressedException
 rescue LoadError
 end
+# rubocop:enable Lint/SuppressedException
 
 module BaseProjects
   class Error < StandardError; end
