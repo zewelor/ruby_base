@@ -1,5 +1,5 @@
 ARG RUBY_VERSION
-FROM ghcr.io/quicklytics-io/ruby:${RUBY_VERSION}-slim as base
+FROM ghcr.io/zewelor/ruby:${RUBY_VERSION}-slim as base
 
 ARG BUNDLER_VERSION=2.5.12
 ARG RUNTIME_PACKAGES=""
