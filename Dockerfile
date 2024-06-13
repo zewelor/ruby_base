@@ -1,6 +1,7 @@
-FROM ghcr.io/zewelor/ruby:3.2.2-slim as base
+ARG RUBY_VERSION
+FROM ghcr.io/quicklytics-io/ruby:${RUBY_VERSION}-slim as base
 
-ARG BUNDLER_VERSION=2.4.12
+ARG BUNDLER_VERSION=2.5.12
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git"
 
