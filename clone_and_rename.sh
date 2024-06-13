@@ -62,3 +62,4 @@ else
   echo "Directory does not exist"
 fi
 
+echo "Now add new repository via https://github.com/new and push the changes to the new repository."
