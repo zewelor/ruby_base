@@ -4,6 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby File.read(File.join(__dir__, ".ruby-version")).strip.sub("ruby-", "")
 
 gem "zeitwerk"
+gem "bundle-audit"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
