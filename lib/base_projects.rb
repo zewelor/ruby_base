@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # https://github.com/fxn/zeitwerk#synopsis
+require "amazing_print"
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
 loader.setup # ready!
