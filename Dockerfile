@@ -1,5 +1,5 @@
 ARG RUBY_VERSION
-FROM ghcr.io/zewelor/ruby:${RUBY_VERSION}-slim as base
+FROM ghcr.io/zewelor/ruby:${RUBY_VERSION}-slim AS base
 
 ARG BUNDLER_VERSION=2.5.12
 ARG RUNTIME_PACKAGES=""
@@ -21,7 +21,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/ && \
     gem install bundler -v "$BUNDLER_VERSION"
 
-FROM base as basedev
+FROM base AS basedev
 
 # install dev dependencies
 # hadolint ignore=SC2086,DL3008
@@ -31,7 +31,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/
 
-FROM basedev as dev
+FROM basedev AS dev
 
 RUN mkdir -p "$BUNDLE_PATH" && \
     chown -R app:app "$BUNDLE_PATH"
@@ -42,13 +42,13 @@ USER app
 RUN gem install bundler -v "$BUNDLER_VERSION" && \
     mkdir -p "$HOME/.vscode-server/"
 
-FROM basedev as baseliveci
+FROM basedev AS baseliveci
 
 # Workdir set in base image
 # hadolint ignore=DL3045
 COPY --chown=app:app Gemfile .ruby-version ./
 
-FROM baseliveci as ci
+FROM baseliveci AS ci
 
 # hadolint ignore=SC2086
 RUN mkdir -p $BUNDLE_PATH && \
@@ -57,12 +57,12 @@ RUN mkdir -p $BUNDLE_PATH && \
 RUN bundle install "-j$(nproc)" --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
-FROM baseliveci as live_builder
+FROM baseliveci AS live_builder
 
 RUN bundle install "-j$(nproc)" --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
-FROM base as live
+FROM base AS live
 
 # We enable `BUNDLE_DEPLOYMENT` so that bundler won't take the liberty to upgrade any gems.
 ENV BUNDLE_DEPLOYMENT="1" \
