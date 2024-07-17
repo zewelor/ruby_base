@@ -33,7 +33,7 @@
       ],
     },
     {
-      matchManager": ["bundler"],
+      matchManager: ["bundler"],
       matchUpdateTypes: [
         'patch',
         'minor',
