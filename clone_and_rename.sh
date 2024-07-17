@@ -25,10 +25,10 @@ OLD_NAME="base_projects"
 NEW_NAME="$1"
 
 # Convert new_name to CamelCase using Ruby
-NEW_NAME_CAMEL=$(ruby -e "puts '${NEW_NAME}'.split('_').collect(&:capitalize).join")
+NEW_NAME_CAMEL=$(ruby -e "puts '${NEW_NAME}'.tr('-', '_').split('_').collect(&:capitalize).join")
 
 # Convert base name to CamelCase using Ruby
-OLD_NAME_CAMEL=$(ruby -e "puts '${OLD_NAME}'.split('_').collect(&:capitalize).join")
+OLD_NAME_CAMEL=$(ruby -e "puts '${OLD_NAME}'.tr('-', '_').split('_').collect(&:capitalize).join")
 
 # Function to clone repository
 function clone_repository {
