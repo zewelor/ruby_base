@@ -28,7 +28,7 @@ NEW_NAME="$1"
 NEW_NAME_CAMEL=$(ruby -e "puts '${NEW_NAME}'.tr('-', '_').split('_').collect(&:capitalize).join")
 
 # Convert base name to CamelCase using Ruby
-OLD_NAME_CAMEL=$(ruby -e "puts '${OLD_NAME}'.tr('-', '_').split('_').collect(&:capitalize).join")
+OLD_NAME_CAMEL=$(ruby -e "puts '${OLD_NAME}'.split('_').collect(&:capitalize).join")
 
 # Function to clone repository
 function clone_repository {
@@ -41,6 +41,8 @@ clone_repository
 # Directory to process
 DIR_PATH="${NEW_NAME}"
 
+NEW_FILE_NAME="${NEW_NAME} | tr '-' '_'"
+
 # Check if the directory exists
 if [ -d "$DIR_PATH" ]; then
   # Delete .git directory and reinitialize
@@ -51,13 +53,13 @@ if [ -d "$DIR_PATH" ]; then
 
   # Rename directories and files
   find "$DIR_PATH" -name "${OLD_NAME}*" | while read FILE; do
-    NEW_FILE=$(echo $FILE | sed "s/${OLD_NAME}/${NEW_NAME}/g")
+    NEW_FILE=$(echo $FILE | sed "s/${OLD_NAME}/${NEW_FILE_NAME}/g")
     mv "$FILE" "$NEW_FILE"
   done
 
   # Rename content inside files
   find "$DIR_PATH" -type f -exec sed -i "s/$OLD_NAME_CAMEL/$NEW_NAME_CAMEL/g" {} \;
-  find "$DIR_PATH" -type f -exec sed -i "s/$OLD_NAME/$NEW_NAME/g" {} \;
+  find "$DIR_PATH" -type f -exec sed -i "s/$OLD_NAME/$NEW_FILE_NAME/g" {} \;
 else
   echo "Directory does not exist"
 fi
