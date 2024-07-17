@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "kaiwood.endwise",
-    "rebornix.ruby",
     "redhat.vscode-yaml",
     "shopify.ruby-lsp",
     "github.vscode-github-actions"
