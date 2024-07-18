@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
+Bundler.require(:default)
+
 # https://github.com/fxn/zeitwerk#synopsis
-require "amazing_print"
-require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
 loader.setup # ready!
 

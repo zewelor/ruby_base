@@ -5,12 +5,12 @@ ruby File.read(File.join(__dir__, ".ruby-version")).strip.sub("ruby-", "")
 
 gem "zeitwerk"
 gem "bundle-audit"
+gem "amazing_print"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv"
   gem "irb"
-  gem "amazing_print"
 end
 
 group :development do
