@@ -46,7 +46,7 @@ FROM basedev AS baseliveci
 
 # Workdir set in base image
 # hadolint ignore=DL3045
-COPY --chown=app:app Gemfile Gemfile.lock .ruby-version ./
+COPY --chown=app:app Gemfile .ruby-version ./
 
 FROM baseliveci AS ci
 
