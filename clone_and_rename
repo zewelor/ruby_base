@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'optparse'
+
+# Function to display help
+def display_help
+  puts "Usage: #{$PROGRAM_NAME} [OPTION]... [NEW_NAME]"
+  puts "Clone a repository, then rename 'base_projects' to a new name in file/directory names and replace 'BaseProject' string inside files."
+  puts ""
+  puts "Mandatory arguments:"
+  puts "  new_name     new name to replace 'base_projects'"
+  puts ""
+  puts "Optional arguments:"
+  puts "  -h, --help   display this help and exit"
+end
+
+
+def update_dockerfile(dir_path)
+  dockerfile_path = "#{dir_path}/Dockerfile"
+
+  # Read the Dockerfile content
+  dockerfile_content = File.read(dockerfile_path)
+
+  # Define the line to search for and the new line to replace it with
+  search_line = "COPY --chown=app:app Gemfile .ruby-version ./"
+  replace_line = "COPY --chown=app:app Gemfile Gemfile.lock .ruby-version ./"
+
+  # Check if the line exists in the Dockerfile
+  if dockerfile_content.include?(search_line)
+    # Replace the line
+    new_dockerfile_content = dockerfile_content.gsub(search_line, replace_line)
+    # Write the modified content back to the Dockerfile
+    File.write(dockerfile_path, new_dockerfile_content)
+  else
+    # Raise an error if the line is not found
+    raise "Line not found in Dockerfile: #{search_line}"
+  end
+end
+
+# Parse options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options] [NEW_NAME]"
+
+  opts.on("-h", "--help", "Display help") do
+    display_help
+    exit
+  end
+end.parse!
+
+# Check number of arguments
+if ARGV.length < 1
+  display_help
+  exit 0
+end
+
+# Configurable constants
+OLD_NAME = 'base_projects'
+OLD_NAME_CAMEL = OLD_NAME.split('_').map(&:capitalize).join
+
+# Arguments
+NEW_NAME = ARGV[0]
+NEW_NAME_CAMEL = NEW_NAME.tr('-', '_').split('_').map(&:capitalize).join
+
+# Function to clone repository
+def clone_repository(new_name)
+  system("git clone --depth 1 https://github.com/zewelor/ruby_base.git -b ruby-cli #{new_name}")
+end
+
+# Clone repository
+clone_repository(NEW_NAME)
+
+# Directory to process
+dir_path = NEW_NAME
+new_file_name = NEW_NAME.tr('-', '_')
+
+# Check if the directory exists
+if Dir.exist?(dir_path)
+  # Delete .git directory and reinitialize
+  FileUtils.rm_rf("#{dir_path}/.git")
+  Dir.chdir(dir_path) do
+    system("git init")
+  end
+
+  # Rename directories and files
+  Dir.glob("#{dir_path}/**/#{OLD_NAME}*").each do |file|
+    new_file = file.gsub(OLD_NAME, new_file_name)
+    FileUtils.mv(file, new_file)
+  end
+
+  # Rename content inside files
+  Dir.glob("#{dir_path}/**/*").each do |file|
+    next unless File.file?(file)
+
+    content = File.read(file)
+    content.gsub!(OLD_NAME_CAMEL, NEW_NAME_CAMEL)
+    content.gsub!(OLD_NAME, new_file_name)
+    File.write(file, content)
+  end
+
+  # Update Dockerfile
+  update_dockerfile(dir_path)
+else
+  puts "Directory does not exist"
+end
+
+puts "Now add new repository via https://github.com/new and push the changes to the new repository."
