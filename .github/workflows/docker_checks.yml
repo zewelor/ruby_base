@@ -9,7 +9,7 @@ env:
   COMPOSE_FILE: docker-compose.ci.yml
   # It counts some attestation etc packages, each commit gives 3 pckages
   OLD_VERSIONS_TO_KEEP: 75 # 25 commits
-
+  DOCKER_BUILD_CHECKS_ANNOTATIONS: false
 
 jobs:
   tests:
