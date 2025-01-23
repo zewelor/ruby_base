@@ -1,49 +1,67 @@
 {
-  extends: ["config:base", ":dependencyDashboard"],
+  extends: [
+    'config:recommended',
+    ':dependencyDashboard',
+  ],
   ignorePaths: [
     '.github/workflows',
   ],
-  baseBranches: ["main", "ruby-cli"],
-  timezone: "Europe/Warsaw",
+  baseBranches: [
+    'main',
+    'ruby-cli',
+  ],
+  timezone: 'Europe/Warsaw',
   vulnerabilityAlerts: {
-    "enabled": true
+    enabled: true,
   },
   packageRules: [
     {
-      matchManagers: ["bundler"],
+      matchManagers: [
+        'bundler',
+      ],
       labels: [
-        "renovate/bundler",
-        "dependency/bundler",
+        'renovate/bundler',
+        'dependency/bundler',
       ],
     },
     {
-      matchDatasources: ['docker'],
-      matchUpdateTypes: ['minor'],
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
       labels: [
         'renovate/image-release',
         'dependency/minor',
       ],
     },
     {
-      matchDatasources: ['docker'],
-      matchUpdateTypes: ['patch'],
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
       labels: [
         'renovate/image-release',
         'dependency/patch',
       ],
     },
     {
-      matchManagers: ["bundler"],
+      matchManagers: [
+        'bundler',
+      ],
       matchUpdateTypes: [
         'patch',
         'minor',
       ],
       automerge: true,
-      automergeType: "branch",
+      automergeType: 'branch',
       matchPackageNames: [
-        "lefthook",
-        "rubocop-performance"
-      ]
+        'lefthook',
+        'rubocop-performance',
+      ],
     },
   ],
 }
