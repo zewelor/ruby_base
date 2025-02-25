@@ -3,7 +3,7 @@ FROM ghcr.io/zewelor/ruby:${RUBY_VERSION}-slim AS base
 
 ARG BUNDLER_VERSION=2.5.12
 ARG RUNTIME_PACKAGES=""
-ARG DEV_PACKAGES="build-essential git"
+ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
 # We mount whole . dir into app, so vendor/bundle would get overwritten
 ENV BUNDLE_PATH=/bundle \
