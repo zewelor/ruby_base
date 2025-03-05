@@ -1,7 +1,6 @@
-ARG RUBY_VERSION
-FROM ghcr.io/zewelor/ruby:${RUBY_VERSION}-slim AS base
+FROM ghcr.io/zewelor/ruby:3.3.7-slim AS base
 
-ARG BUNDLER_VERSION=2.5.12
+ARG BUNDLER_VERSION=2.6.3
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
@@ -46,7 +45,7 @@ FROM basedev AS baseliveci
 
 # Workdir set in base image
 # hadolint ignore=DL3045
-COPY --chown=app:app Gemfile .ruby-version ./
+COPY --chown=app:app Gemfile ./
 
 FROM baseliveci AS ci
 
@@ -73,7 +72,7 @@ ENV BUNDLE_DEPLOYMENT="1" \
 # hadolint ignore=DL3045
 COPY --chown=app:app --from=live_builder $BUNDLE_PATH $BUNDLE_PATH
 # hadolint ignore=DL3045
-COPY --chown=app:app . .ruby-version ./
+COPY --chown=app:app . ./
 
 USER app
 

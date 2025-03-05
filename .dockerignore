@@ -42,3 +42,8 @@ config/credentials/*.key
 /*.ipynb
 
 Dockerfile
+docker-compose.*
+dockerized*
+Justfile
+**/*.md
+.*
