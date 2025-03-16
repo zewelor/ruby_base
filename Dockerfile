@@ -1,6 +1,6 @@
 FROM ghcr.io/zewelor/ruby:3.4.2-slim AS base
 
-ARG BUNDLER_VERSION=2.6.3
+ARG BUNDLER_VERSION=2.6.6
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
@@ -38,8 +38,7 @@ RUN mkdir -p "$BUNDLE_PATH" && \
 USER app
 
 # https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls
-RUN gem install bundler -v "$BUNDLER_VERSION" && \
-    mkdir -p "$HOME/.vscode-server/"
+RUN mkdir -p "$HOME/.vscode-server/"
 
 FROM basedev AS baseliveci
 
