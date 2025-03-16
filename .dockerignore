@@ -47,3 +47,6 @@ dockerized*
 Justfile
 **/*.md
 .*
+.ruby-lsp
+*.gemspec
+lefthook.yml
