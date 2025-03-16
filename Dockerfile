@@ -58,8 +58,7 @@ RUN bundle install "-j$(nproc)" --retry 3 && \
 
 FROM baseliveci AS live_builder
 
-ENV BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_WITHOUT="development:test"
+ENV BUNDLE_WITHOUT="development:test"
 
 RUN bundle install "-j$(nproc)" --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -67,7 +66,9 @@ RUN bundle install "-j$(nproc)" --retry 3 && \
 FROM base AS live
 
 # We enable `BUNDLE_DEPLOYMENT` so that bundler won't take the liberty to upgrade any gems.
-ENV RUBYOPT='--disable-did_you_mean'
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_WITHOUT="development:test" \
+    RUBYOPT='--disable-did_you_mean'
 
 # Workdir set in base image
 # hadolint ignore=DL3045
