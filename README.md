@@ -1,7 +1,7 @@
 # Ruby base projects
 
 ## Ruby Base Clone and Rename
-This repository provides a bash script, clone_and_rename.sh, which clones a specified Ruby base repository and then renames certain predefined elements.
+This repository provides a bash script, clone_and_rename, which clones a specified Ruby base repository and then renames certain predefined elements.
 
 The script performs the following operations:
 
@@ -15,7 +15,7 @@ The script performs the following operations:
 To use the script, you need to download it and make it executable. Here's a one-liner that accomplishes this, runs the script, and then deletes it:
 
 ```bash
-wget https://raw.githubusercontent.com/zewelor/ruby_base/main/clone_and_rename.sh && chmod +x clone_and_rename && ./clone_and_rename new_project && rm clone_and_rename
+wget https://raw.githubusercontent.com/zewelor/ruby_base/main/clone_and_rename && chmod +x clone_and_rename && ./clone_and_rename new_project && rm clone_and_rename
 ```
 In the command above, replace new_project with your desired name. This command will clone the repository and replace all occurrences of "base_projects" and "BaseProject" with your provided name and its CamelCase equivalent, respectively.
 
@@ -23,5 +23,5 @@ In the command above, replace new_project with your desired name. This command w
 If you need help or want to view the usage instructions, you can download the script and run:
 
 ```bash
-./clone_and_rename.sh -h
+./clone_and_rename -h
 ```
