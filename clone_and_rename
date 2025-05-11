@@ -23,8 +23,8 @@ def update_dockerfile(dir_path)
   dockerfile_content = File.read(dockerfile_path)
 
   # Define the line to search for and the new line to replace it with
-  search_line = "COPY --chown=app:app Gemfile .ruby-version ./"
-  replace_line = "COPY --chown=app:app Gemfile Gemfile.lock .ruby-version ./"
+  search_line = "COPY --chown=app:app Gemfile ./"
+  replace_line = "COPY --chown=app:app Gemfile Gemfile.lock ./"
 
   # Check if the line exists in the Dockerfile
   if dockerfile_content.include?(search_line)
