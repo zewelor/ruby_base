@@ -1,6 +1,6 @@
 FROM ghcr.io/zewelor/ruby:3.4.3-slim AS base
 
-ARG BUNDLER_VERSION=2.6.6
+ARG BUNDLER_VERSION=2.6.8
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
