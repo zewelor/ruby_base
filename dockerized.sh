@@ -13,7 +13,7 @@ docker_compose_run_on_exec () {
 }
 
 # Declare functions for each name
-names=("rails" "bundle" "rake" "gem" "standardrb" "rubocop" "rspec" "lefthook" "spring" "brakeman")
+names=("ruby" "rails" "bundle" "rake" "gem" "standardrb" "rubocop" "rspec" "lefthook" "spring" "brakeman")
 
 for name in "${names[@]}"
 do
