@@ -13,6 +13,7 @@ end
 group :development do
   gem "standard"
   gem "lefthook"
+  gem "ruby-lsp", require: false
 end
 
 group :test do
