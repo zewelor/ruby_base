@@ -45,6 +45,24 @@
       ],
     },
     {
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      matchPackageNames: [
+        'ghcr.io/zewelor/ruby',
+      ],
+      automerge: true,
+      automergeType: 'branch',
+      labels: [
+        'renovate/image-release',
+        'dependency/patch',
+        'automerge',
+      ],
+    },
+    {
       matchManagers: [
         'bundler',
       ],
@@ -60,6 +78,18 @@
         'ruby-lsp',
         'amazing_print',
         'standard'
+      ],
+    },
+    {
+      matchManagers: [
+        'github-actions',
+      ],
+      schedule: [
+        'every weekend',
+      ],
+      labels: [
+        'renovate/github-actions',
+        'dependency/github-actions',
       ],
     },
   ],
