@@ -6,7 +6,7 @@
   ignorePaths: [
     '.github/workflows',
   ],
-  baseBranches: [
+  baseBranchPatterns: [
     'main',
     'ruby-cli',
   ],
