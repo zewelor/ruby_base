@@ -12,38 +12,11 @@
   },
   packageRules: [
     {
-      matchManagers: [
-        'bundler',
-      ],
-      labels: [
-        'renovate/bundler',
-        'dependency/bundler',
-      ],
-    },
-    {
-      matchDatasources: [
-        'docker',
-      ],
-      matchUpdateTypes: [
-        'minor',
-      ],
-      labels: [
-        'renovate/image-release',
-        'dependency/minor',
-      ],
-    },
-    {
-      matchDatasources: [
-        'docker',
-      ],
-      matchUpdateTypes: [
-        'patch',
-      ],
-      labels: [
-        'renovate/image-release',
-        'dependency/patch',
-      ],
-    },
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "branch",
+      "platformAutomerge": true
+    }
     {
       matchDatasources: [
         'docker',
