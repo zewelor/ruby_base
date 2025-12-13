@@ -25,5 +25,5 @@ do
   "
 done
 
-export LEFTHOOK_BIN="bin/lefthook" # Set the lefthook bin path
+export LEFTHOOK_BIN="lefthook" # Set the lefthook bin path, our custom wrappe
 echo "Dockerized aliasses set"
