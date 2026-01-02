@@ -12,11 +12,11 @@
   },
   packageRules: [
     {
-      "matchManagers": ["github-actions"],
-      "automerge": true,
-      "automergeType": "branch",
-      "platformAutomerge": true
-    }
+      matchManagers: ['github-actions'],
+      automerge: true,
+      automergeType: 'branch',
+      platformAutomerge: true,
+    },
     {
       matchDatasources: [
         'docker',
@@ -25,7 +25,7 @@
         'patch',
       ],
       matchPackageNames: [
-        'ghcr.io/zewelor/ruby',
+        'ruby',
       ],
       automerge: true,
       automergeType: 'branch',
@@ -50,7 +50,7 @@
         'rubocop-performance',
         'ruby-lsp',
         'amazing_print',
-        'standard'
+        'standard',
       ],
     },
     {

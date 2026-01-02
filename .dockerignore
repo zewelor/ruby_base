@@ -49,4 +49,5 @@ Justfile
 .*
 .ruby-lsp
 *.gemspec
+bin/lefthook
 lefthook.yml
