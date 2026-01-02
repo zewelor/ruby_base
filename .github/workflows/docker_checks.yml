@@ -6,7 +6,7 @@ on:
 
 env:
   COMPOSE_DOCKER_CLI_BUILD: 1
-  COMPOSE_FILE: docker-compose.ci.yml
+  COMPOSE_FILE: compose.ci.yml
   # It counts some attestation etc packages, each commit gives 3 pckages
   OLD_VERSIONS_TO_KEEP: 75 # 25 commits
   DOCKER_BUILD_CHECKS_ANNOTATIONS: false
@@ -33,7 +33,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           target: ci
-          # Used by docker-compose.ci
+          # Used by compose.ci
           tags: image_ci:latest
 
       - name: Run Bundle Audit
