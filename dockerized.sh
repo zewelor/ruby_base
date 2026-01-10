@@ -6,11 +6,9 @@ docker_compose_run_on_exec () {
 
   if docker compose ps | grep -q $container_name
   then
-    docker compose exec -it $container_name "$@" 2>&1 | grep -v '^ app Pull'
-    return ${PIPESTATUS[0]}
+    docker compose --progress quiet exec -it $container_name "$@"
   else
-    docker compose run --rm --quiet-pull -it --service-ports $container_name "$@" 2>&1 | grep -v '^ app Pull'
-    return ${PIPESTATUS[0]}
+    docker compose --progress quiet run --rm -it --service-ports $container_name "$@"
   fi
 }
 
