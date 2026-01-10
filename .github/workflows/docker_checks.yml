@@ -40,9 +40,9 @@ jobs:
         run: |
           docker compose run --rm app bundle exec bundler-audit check --update
 
-      - name: Run Rubocop
+      - name: Run StandardRB
         run: |
-          docker compose run app rubocop
+          docker compose run --rm app bundle exec standardrb
 
   push_production:
     permissions:
