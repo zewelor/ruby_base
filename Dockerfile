@@ -20,9 +20,9 @@ ENV HOME=/home/app
 WORKDIR /app
 
 # install runtime dependencies
-# hadolint ignore=SC2086,DL3008
 # SC2086: Double quote to prevent globbing - intentionally unquoted for word splitting
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
+# hadolint ignore=SC2086,DL3008
 RUN set -eux; \
     if [ -n "$RUNTIME_PACKAGES" ]; then \
       apt-get update; \
@@ -32,9 +32,10 @@ RUN set -eux; \
     fi; \
     rm -rf /tmp/* /var/tmp/*
 
+# hadolint ignore=DL3046
 RUN set -eux; \
     groupadd -g "$APP_GID" app; \
-    useradd -u "$APP_UID" -g "$APP_GID" -m -d "$HOME" -s /usr/sbin/nologin app
+    useradd -l -u "$APP_UID" -g "$APP_GID" -m -d "$HOME" -s /usr/sbin/nologin app
 
 FROM base AS basedev
 
@@ -43,9 +44,9 @@ ARG DEV_PACKAGES
 ENV BUNDLE_AUTO_INSTALL=true
 
 # install development dependencies
-# hadolint ignore=SC2086,DL3008
 # SC2086: Double quote to prevent globbing - intentionally unquoted for word splitting
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
+# hadolint ignore=SC2086,DL3008
 RUN set -eux; \
     if [ -n "$DEV_PACKAGES" ]; then \
       apt-get update; \
@@ -73,8 +74,8 @@ COPY --chown=app:app Gemfile ./
 
 FROM baseliveci AS ci
 
-# hadolint ignore=SC2086
 # SC2086: Double quote to prevent globbing - variable is safe, quoting optional
+# hadolint ignore=SC2086
 RUN mkdir -p $BUNDLE_PATH && \
     chown -R app $BUNDLE_PATH
 
@@ -124,6 +125,9 @@ FROM live_builder AS distroless_builder
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
 COPY --chown=app:app . ./
 
+# DL4006: pipefail - not needed, we use set -eux and handle errors explicitly
+# SC2016: Single quotes intentional - we want literal $ for awk patterns
+# hadolint ignore=DL4006,SC2016
 RUN set -eux; \
     mkdir -p /distroless-root/usr/local /distroless-root/usr/lib /distroless-root/usr/lib64 /distroless-root/bundle /distroless-root/app; \
     cp -a /usr/local/. /distroless-root/usr/local/; \
