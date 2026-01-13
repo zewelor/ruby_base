@@ -3,7 +3,7 @@ ARG DEV_PACKAGES="build-essential git libyaml-dev"
 ARG APP_UID=1000
 ARG APP_GID=1000
 
-FROM ruby:4.0.0-slim-trixie AS base
+FROM ruby:4.0.1-slim-trixie AS base
 
 ARG RUNTIME_PACKAGES
 ARG APP_UID
