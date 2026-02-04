@@ -11,10 +11,7 @@ ARG APP_GID
 
 # We mount whole . dir into app, so vendor/bundle would get overwritten
 ENV BUNDLE_PATH=/bundle \
-  BUNDLE_BIN=/bundle/bin \
   GEM_HOME=/bundle
-
-ENV PATH="${BUNDLE_BIN}:${PATH}"
 
 ENV HOME=/home/app
 WORKDIR /app
@@ -152,9 +149,7 @@ RUN set -eux; \
 FROM gcr.io/distroless/base-debian13:nonroot AS distroless
 
 ENV BUNDLE_PATH=/bundle \
-  BUNDLE_BIN=/bundle/bin \
   GEM_HOME=/bundle \
-  PATH="/bundle/bin:/usr/local/bin:/usr/bin:/bin" \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \
   RUBYOPT='--disable-did_you_mean' \

@@ -1,5 +1,9 @@
 pre-commit:
   commands:
-    rubocop:
-      exclude: "application.rb|routes.rb"
-      run: rubocop --parallel --force-exclusion --autocorrect --fail-level A {staged_files}
+    standardrb:
+      run: |
+        files="$(
+          git diff --name-only --cached --diff-filter=ACMR -- '*.rb' '*.rake' 'Rakefile' 'Gemfile' |
+            grep -Ev '(^|/)(application\\.rb|routes\\.rb)$' || true
+        )"
+        test -z "$files" || bundle exec standardrb --fix $files
