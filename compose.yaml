@@ -4,6 +4,7 @@ services:
       context: .
       target: dev
     tty: true
+    user: "${UID:-1000}:${GID:-1000}"
     stdin_open: true
     volumes:
       - .:/app:cached
