@@ -15,37 +15,38 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
 # hadolint ignore=SC2086,DL3008
 RUN set -eux; \
-  if [ -n "$RUNTIME_PACKAGES" ]; then \
-  apt-get update; \
-  apt-get install -y --no-install-recommends $RUNTIME_PACKAGES; \
-  apt-get clean; \
-  rm -rf /var/lib/apt/lists/*; \
-  fi; \
-  rm -rf /tmp/* /var/tmp/*
+    if [ -n "$RUNTIME_PACKAGES" ]; then \
+      apt-get update; \
+      apt-get install -y --no-install-recommends $RUNTIME_PACKAGES; \
+      apt-get clean; \
+      rm -rf /var/lib/apt/lists/*; \
+    fi; \
+    rm -rf /tmp/* /var/tmp/*
 
 FROM base AS basedev
 
 ARG DEV_PACKAGES
-
-ENV BUNDLE_AUTO_INSTALL=true
 
 # install development dependencies
 # SC2086: Double quote to prevent globbing - intentionally unquoted for word splitting
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
 # hadolint ignore=SC2086,DL3008
 RUN set -eux; \
-  if [ -n "$DEV_PACKAGES" ]; then \
-  apt-get update; \
-  apt-get install -y --no-install-recommends $DEV_PACKAGES; \
-  apt-get clean; \
-  rm -rf /var/lib/apt/lists/*; \
-  fi; \
-  rm -rf /tmp/* /var/tmp/*
+    if [ -n "$DEV_PACKAGES" ]; then \
+      apt-get update; \
+      apt-get install -y --no-install-recommends $DEV_PACKAGES; \
+      apt-get clean; \
+      rm -rf /var/lib/apt/lists/*; \
+    fi; \
+    rm -rf /tmp/* /var/tmp/*
 
 FROM basedev AS dev
 
+ENV BUNDLE_AUTO_INSTALL=true \
+    BUNDLE_CLEAN=true
+
 RUN mkdir -p "$BUNDLE_PATH" && \
-  chown -R app:app "$BUNDLE_PATH"
+    chown -R app:app "$BUNDLE_PATH"
 
 USER app
 
@@ -63,17 +64,17 @@ FROM baseliveci AS ci
 # SC2086: Double quote to prevent globbing - variable is safe, quoting optional
 # hadolint ignore=SC2086
 RUN mkdir -p $BUNDLE_PATH && \
-  chown -R app $BUNDLE_PATH
+    chown -R app $BUNDLE_PATH
 
 RUN bundle install "-j$(nproc)" --retry 3 && \
-  rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
 FROM baseliveci AS live_builder
 
 ENV BUNDLE_WITHOUT="development:test"
 
 RUN bundle install "-j$(nproc)" --retry 3 && \
-  rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
 FROM base AS live
 
@@ -91,15 +92,15 @@ COPY --chown=app:app . ./
 
 # Minimal cleanup for runtime size (keep package manager intact).
 RUN rm -rf \
-  /usr/share/doc \
-  /usr/share/man \
-  /usr/share/info \
-  /usr/share/lintian \
-  /usr/share/locale \
-  /var/log/* \
-  /var/cache/* \
-  /tmp/* \
-  /var/tmp/*
+    /usr/share/doc \
+    /usr/share/man \
+    /usr/share/info \
+    /usr/share/lintian \
+    /usr/share/locale \
+    /var/log/* \
+    /var/cache/* \
+    /tmp/* \
+    /var/tmp/*
 
 USER app
 
@@ -112,7 +113,7 @@ FROM live_builder AS distroless_builder
 COPY --chown=app:app . ./
 
 RUN set -eux; \
-  chown -R 65532:65532 /bundle /app
+    chown -R 65532:65532 /bundle /app
 
 FROM ghcr.io/zewelor/ruby:latest-distroless AS distroless
 
