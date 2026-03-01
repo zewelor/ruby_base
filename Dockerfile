@@ -1,13 +1,9 @@
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
-ARG APP_UID=1000
-ARG APP_GID=1000
 
 FROM ghcr.io/zewelor/ruby:4.0.1-slim AS base
 
 ARG RUNTIME_PACKAGES
-ARG APP_UID
-ARG APP_GID
 
 # We mount whole . dir into app, so vendor/bundle would get overwritten
 ENV DEBIAN_FRONTEND=noninteractive \
