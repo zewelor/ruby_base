@@ -3,7 +3,7 @@ ARG DEV_PACKAGES="build-essential git libyaml-dev"
 ARG APP_UID=1000
 ARG APP_GID=1000
 
-FROM ruby:4.0.1-slim-trixie AS base
+FROM ghcr.io/zewelor/ruby:4.0.1-slim AS base
 
 ARG RUNTIME_PACKAGES
 ARG APP_UID
@@ -13,9 +13,6 @@ ARG APP_GID
 ENV DEBIAN_FRONTEND=noninteractive \
   BUNDLE_PATH=/bundle \
   GEM_HOME=/bundle
-
-ENV HOME=/home/app
-WORKDIR /app
 
 # install runtime dependencies
 # SC2086: Double quote to prevent globbing - intentionally unquoted for word splitting
@@ -29,11 +26,6 @@ RUN set -eux; \
   rm -rf /var/lib/apt/lists/*; \
   fi; \
   rm -rf /tmp/* /var/tmp/*
-
-# hadolint ignore=DL3046
-RUN set -eux; \
-  groupadd -g "$APP_GID" app; \
-  useradd -l -u "$APP_UID" -g "$APP_GID" -m -d "$HOME" -s /usr/sbin/nologin app
 
 FROM base AS basedev
 
