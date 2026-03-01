@@ -89,8 +89,8 @@ ENV BUNDLE_DEPLOYMENT="1" \
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
 # hadolint ignore=DL3045
 COPY --chown=app:app --from=live_builder $BUNDLE_PATH $BUNDLE_PATH
-# hadolint ignore=DL3045
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
+# hadolint ignore=DL3045
 COPY --chown=app:app . ./
 
 # Minimal cleanup for runtime size (keep package manager intact).
