@@ -58,8 +58,8 @@ RUN mkdir -p "$HOME/.vscode-server/"
 
 FROM basedev AS baseliveci
 
-# hadolint ignore=DL3045
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
+# hadolint ignore=DL3045
 COPY --chown=app:app Gemfile ./
 
 FROM baseliveci AS ci
@@ -86,8 +86,8 @@ ENV BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \
   RUBYOPT='--disable-did_you_mean'
 
-# hadolint ignore=DL3045
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
+# hadolint ignore=DL3045
 COPY --chown=app:app --from=live_builder $BUNDLE_PATH $BUNDLE_PATH
 # hadolint ignore=DL3045
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
@@ -111,8 +111,8 @@ ENTRYPOINT ["ruby", "bin/cli"]
 
 FROM live_builder AS distroless_builder
 
-# hadolint ignore=DL3045
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
+# hadolint ignore=DL3045
 COPY --chown=app:app . ./
 
 RUN set -eux; \
