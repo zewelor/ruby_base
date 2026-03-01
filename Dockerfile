@@ -10,7 +10,8 @@ ARG APP_UID
 ARG APP_GID
 
 # We mount whole . dir into app, so vendor/bundle would get overwritten
-ENV BUNDLE_PATH=/bundle \
+ENV DEBIAN_FRONTEND=noninteractive \
+  BUNDLE_PATH=/bundle \
   GEM_HOME=/bundle
 
 ENV HOME=/home/app
