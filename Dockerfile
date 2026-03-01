@@ -122,46 +122,21 @@ FROM live_builder AS distroless_builder
 # DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
 COPY --chown=app:app . ./
 
-# DL4006: pipefail - not needed, we use set -eux and handle errors explicitly
-# SC2016: Single quotes intentional - we want literal $ for awk patterns
-# hadolint ignore=DL4006,SC2016
 RUN set -eux; \
-  mkdir -p /distroless-root/usr/local /distroless-root/usr/lib /distroless-root/usr/lib64 /distroless-root/bundle /distroless-root/app; \
-  cp -a /usr/local/. /distroless-root/usr/local/; \
-  cp -a /bundle/. /distroless-root/bundle/; \
-  cp -a /app/. /distroless-root/app/; \
-  libs_tmp=/tmp/distroless-libs; \
-  ldd /usr/local/bin/ruby | awk '/=> \// {print $3} /^\// {print $1}' > "$libs_tmp"; \
-  find /usr/local/lib/ruby -name '*.so' -print0 | xargs -0 -r -n1 sh -c 'ldd "$1" || true' sh | awk '/=> \// {print $3} /^\// {print $1}' >> "$libs_tmp"; \
-  find /bundle -name '*.so' -print0 | xargs -0 -r -n1 sh -c 'ldd "$1" || true' sh | awk '/=> \// {print $3} /^\// {print $1}' >> "$libs_tmp"; \
-  sort -u "$libs_tmp" | while read -r lib; do \
-  case "$lib" in \
-  /usr/lib/*|/usr/local/lib/*) dest="/distroless-root$lib" ;; \
-  /lib64/*) dest="/distroless-root/usr/lib64${lib#/lib64}" ;; \
-  /lib/*) dest="/distroless-root/usr/lib${lib#/lib}" ;; \
-  *) continue ;; \
-  esac; \
-  mkdir -p "$(dirname "$dest")"; \
-  cp -v "$lib" "$dest"; \
-  done; \
-  chown -R 65532:65532 /distroless-root/bundle /distroless-root/app
+  chown -R 65532:65532 /bundle /app
 
-FROM gcr.io/distroless/base-debian13:nonroot AS distroless
+FROM ghcr.io/zewelor/ruby:latest-distroless AS distroless
 
 ENV BUNDLE_PATH=/bundle \
   GEM_HOME=/bundle \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \
-  RUBYOPT='--disable-did_you_mean' \
-  HOME=/home/nonroot
+  RUBYOPT='--disable-did_you_mean'
 
 WORKDIR /app
 
-COPY --from=distroless_builder /distroless-root/usr/local/ /usr/local/
-COPY --from=distroless_builder /distroless-root/usr/lib/ /usr/lib/
-COPY --from=distroless_builder /distroless-root/usr/lib64/ /usr/lib64/
-COPY --from=distroless_builder /distroless-root/bundle/ /bundle/
-COPY --from=distroless_builder /distroless-root/app/ /app/
+COPY --from=distroless_builder /bundle/ /bundle/
+COPY --from=distroless_builder /app/ /app/
 
 USER nonroot
 
