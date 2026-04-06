@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'fileutils'
 require 'optparse'
@@ -7,14 +8,13 @@ require 'optparse'
 def display_help
   puts "Usage: #{$PROGRAM_NAME} [OPTION]... [NEW_NAME]"
   puts "Clone a repository, then rename 'base_projects' to a new name in file/directory names and replace 'BaseProject' string inside files."
-  puts ""
-  puts "Mandatory arguments:"
+  puts ''
+  puts 'Mandatory arguments:'
   puts "  new_name     new name to replace 'base_projects'"
-  puts ""
-  puts "Optional arguments:"
-  puts "  -h, --help   display this help and exit"
+  puts ''
+  puts 'Optional arguments:'
+  puts '  -h, --help   display this help and exit'
 end
-
 
 def update_dockerfile(dir_path)
   dockerfile_path = "#{dir_path}/Dockerfile"
@@ -23,34 +23,32 @@ def update_dockerfile(dir_path)
   dockerfile_content = File.read(dockerfile_path)
 
   # Define the line to search for and the new line to replace it with
-  search_line = "COPY --chown=app:app Gemfile ./"
-  replace_line = "COPY --chown=app:app Gemfile Gemfile.lock ./"
+  search_line = 'COPY --chown=app:app Gemfile ./'
+  replace_line = 'COPY --chown=app:app Gemfile Gemfile.lock ./'
 
   # Check if the line exists in the Dockerfile
-  if dockerfile_content.include?(search_line)
-    # Replace the line
-    new_dockerfile_content = dockerfile_content.gsub(search_line, replace_line)
-    # Write the modified content back to the Dockerfile
-    File.write(dockerfile_path, new_dockerfile_content)
-  else
-    # Raise an error if the line is not found
-    raise "Line not found in Dockerfile: #{search_line}"
-  end
+  raise "Line not found in Dockerfile: #{search_line}" unless dockerfile_content.include?(search_line)
+
+  # Replace the line
+  new_dockerfile_content = dockerfile_content.gsub(search_line, replace_line)
+  # Write the modified content back to the Dockerfile
+  File.write(dockerfile_path, new_dockerfile_content)
+
+  # Raise an error if the line is not found
 end
 
 # Parse options
-options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [options] [NEW_NAME]"
 
-  opts.on("-h", "--help", "Display help") do
+  opts.on('-h', '--help', 'Display help') do
     display_help
     exit
   end
 end.parse!
 
 # Check number of arguments
-if ARGV.length < 1
+if ARGV.empty?
   display_help
   exit 0
 end
@@ -80,7 +78,7 @@ if Dir.exist?(dir_path)
   # Delete .git directory and reinitialize
   FileUtils.rm_rf("#{dir_path}/.git")
   Dir.chdir(dir_path) do
-    system("git init")
+    system('git init')
   end
 
   # Rename directories and files
@@ -102,7 +100,7 @@ if Dir.exist?(dir_path)
   # Update Dockerfile
   update_dockerfile(dir_path)
 else
-  puts "Directory does not exist"
+  puts 'Directory does not exist'
 end
 
-puts "Now add new repository via https://github.com/new and push the changes to the new repository."
+puts 'Now add new repository via https://github.com/new and push the changes to the new repository.'
