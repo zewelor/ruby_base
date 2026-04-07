@@ -108,22 +108,22 @@ This project uses **Zeitwerk** for autoloading. You MUST strictly follow its con
 
 ### 1. File Structure = Module Structure
 The directory and file names MUST match the constant paths exactly, including **plurality**, some examples:
-- `lib/my_gem/client.rb` ⮕ `module MyGem; class Client; end; end`
-- `lib/my_gem/errors.rb` ⮕ `module MyGem; module Errors; end; end` (Note: `errors.rb` must define `Errors`, not just `Error`)
-- `lib/my_gem/web_parser.rb` ⮕ `module MyGem; class WebParser; end; end` (snake_case to CamelCase)
+- `lib/base_projects/client.rb` ⮕ `module BaseProjects; class Client; end; end`
+- `lib/base_projects/errors.rb` ⮕ `module BaseProjects; module Errors; end; end` (Note: `errors.rb` must define `Errors`, not just `Error`)
+- `lib/base_projects/web_parser.rb` ⮕ `module BaseProjects; class WebParser; end; end` (snake_case to CamelCase)
 
 ### 2. Explicit Nesting
-NEVER use the shorthand `class MyGem::Client`. Always use explicit nesting to ensure modules are correctly defined and Zeitwerk can track them. This is especially important for files that define a new namespace:
+NEVER use the shorthand `class BaseProjects::Client`. Always use explicit nesting to ensure modules are correctly defined and Zeitwerk can track them. This is especially important for files that define a new namespace:
 ```ruby
 # GOOD
-module MyGem
+module BaseProjects
   module Errors
     class APIError < StandardError; end
   end
 end
 
-# BAD (Zeitwerk will fail to find MyGem::Errors if not already loaded)
-class MyGem::Errors::APIError < StandardError; end
+# BAD (Zeitwerk will fail to find BaseProjects::Errors if not already loaded)
+class BaseProjects::Errors::APIError < StandardError; end
 ```
 
 ### 3. No `require` for Internal Files
@@ -131,8 +131,8 @@ Do NOT use `require` or `require_relative` for files inside `lib/`. Zeitwerk han
 
 ### 4. Multi-class Files (The `errors.rb` Rule)
 If a file contains multiple classes or constants, they **MUST** be wrapped in a module or class that matches the filename exactly.
-- **Example:** `lib/my_gem/errors.rb` MUST define `module MyGem; module Errors; ... end; end`.
-- **Reason:** Zeitwerk expects `lib/my_gem/errors.rb` to define the constant `MyGem::Errors`. If you define classes like `MyGem::Error` directly in that file without the `Errors` wrapper, Zeitwerk will not find them and will complain that the expected constant `MyGem::Errors` was not defined.
+- **Example:** `lib/base_projects/errors.rb` MUST define `module BaseProjects; module Errors; ... end; end`.
+- **Reason:** Zeitwerk expects `lib/base_projects/errors.rb` to define the constant `BaseProjects::Errors`. If you define classes like `BaseProjects::Error` directly in that file without the `Errors` wrapper, Zeitwerk will not find them and will complain that the expected constant `BaseProjects::Errors` was not defined.
 
 
 ## Linting with StandardRB
