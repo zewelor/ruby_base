@@ -12,3 +12,6 @@
 /coverage/
 
 .env
+
+# It will be added during initial setup
+Gemfile.lock

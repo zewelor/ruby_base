@@ -10,11 +10,8 @@ end
 group :development do
   gem "amazing_print"
   gem "bundle-audit"
-  gem "standard"
   gem "lefthook"
+  gem "rubocop-performance"
   gem "ruby-lsp", require: false
-end
-
-group :test do
-  gem "simplecov", require: false
+  gem "standard"
 end
