@@ -1,7 +1,7 @@
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
-FROM ghcr.io/zewelor/ruby:4.0.5-slim AS base
+FROM ghcr.io/zewelor/ruby:4.0.6-slim AS base
 
 ARG RUNTIME_PACKAGES
 
