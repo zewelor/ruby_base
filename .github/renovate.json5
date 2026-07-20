@@ -21,7 +21,7 @@
         'patch',
       ],
       matchPackageNames: [
-        'ruby',
+        'ghcr.io/zewelor/ruby',
       ],
       automerge: true,
       automergeType: 'branch',
