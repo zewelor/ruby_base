@@ -221,12 +221,6 @@ source dockerized.sh && lefthook run pre-commit
 - For complex problems, throw more compute at it via subagents
 - One task per subagent for focused execution
 
-### 3. Self-Improvement Loop
-- After ANY correction from the user: update `docs/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
-
 ### 4. Verification Before Done
 - Never mark a task complete without proving it works
 - Diff behavior between main and your changes when relevant
@@ -244,15 +238,6 @@ source dockerized.sh && lefthook run pre-commit
 - Point at logs, errors, failing tests - then resolve them
 - Zero context switching required from the user
 - Go fix failing CI tests without being told how
-
-## Task Management
-
-1. **Plan First**: Write plan to `docs/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `docs/todo.md`
-6. **Capture Lessons**: Update `docs/lessons.md` after corrections
 
 ## Core Principles
 
