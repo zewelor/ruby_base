@@ -1,5 +1,2 @@
-[tools]
-ruby = "latest"
-
 [env]
 BUNDLE_PATH = ".bundle"

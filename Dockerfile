@@ -55,9 +55,7 @@ RUN mkdir -p "$HOME/.vscode-server/"
 
 FROM basedev AS baseliveci
 
-# DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
-# hadolint ignore=DL3045
-COPY --chown=app:app Gemfile ./
+COPY --chown=app:app Gemfile /app/
 
 FROM baseliveci AS ci
 
@@ -76,6 +74,31 @@ ENV BUNDLE_WITHOUT="development:test"
 RUN bundle install "-j$(nproc)" --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
+FROM live_builder AS distroless_builder
+
+COPY --chown=app:app bin/ /app/bin/
+COPY --chown=app:app lib/ /app/lib/
+
+RUN set -eux; \
+    chown -R 65532:65532 /bundle /app
+
+FROM ghcr.io/zewelor/ruby:4.0.6-trixie-distroless AS distroless
+
+ENV BUNDLE_PATH=/bundle \
+  GEM_HOME=/bundle \
+  BUNDLE_DEPLOYMENT="1" \
+  BUNDLE_WITHOUT="development:test" \
+  RUBYOPT='--disable-did_you_mean'
+
+WORKDIR /app
+
+COPY --from=distroless_builder /bundle/ /bundle/
+COPY --from=distroless_builder /app/ /app/
+
+USER nonroot
+
+CMD ["ruby", "bin/cli"]
+
 FROM base AS live
 
 # We enable `BUNDLE_DEPLOYMENT` so that bundler won't take the liberty to upgrade any gems.
@@ -83,12 +106,11 @@ ENV BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \
   RUBYOPT='--disable-did_you_mean'
 
-# DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
-# hadolint ignore=DL3045
 COPY --chown=app:app --from=live_builder $BUNDLE_PATH $BUNDLE_PATH
-# DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
-# hadolint ignore=DL3045
-COPY --chown=app:app . ./
+COPY --chown=app:app --from=live_builder /app/Gemfile.lock /app/Gemfile.lock
+COPY --chown=app:app Gemfile /app/
+COPY --chown=app:app bin/ /app/bin/
+COPY --chown=app:app lib/ /app/lib/
 
 # Minimal cleanup for runtime size (keep package manager intact).
 RUN rm -rf \
@@ -104,30 +126,4 @@ RUN rm -rf \
 
 USER app
 
-ENTRYPOINT ["ruby", "bin/cli"]
-
-FROM live_builder AS distroless_builder
-
-# DL3045: COPY to relative destination without WORKDIR - WORKDIR /app is set in base image
-# hadolint ignore=DL3045
-COPY --chown=app:app . ./
-
-RUN set -eux; \
-    chown -R 65532:65532 /bundle /app
-
-FROM ghcr.io/zewelor/ruby:latest-distroless AS distroless
-
-ENV BUNDLE_PATH=/bundle \
-  GEM_HOME=/bundle \
-  BUNDLE_DEPLOYMENT="1" \
-  BUNDLE_WITHOUT="development:test" \
-  RUBYOPT='--disable-did_you_mean'
-
-WORKDIR /app
-
-COPY --from=distroless_builder /bundle/ /bundle/
-COPY --from=distroless_builder /app/ /app/
-
-USER nonroot
-
-ENTRYPOINT ["ruby", "bin/cli"]
+CMD ["ruby", "bin/cli"]

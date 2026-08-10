@@ -45,6 +45,26 @@ standardrb --fix
 lefthook run pre-commit
 ```
 
+## Ruby Version Contract
+
+- The Dockerfile base-image tags are the source of truth for the Ruby version.
+- The `slim` and `trixie-distroless` base images must use the same Ruby version.
+- Renovate updates the Ruby Docker image tags directly in the Dockerfile.
+- This starter project begins without `Gemfile.lock`; keep it ignored. Docker build stages generate a transient lockfile for the runtime image. Commit a lockfile only as an explicit project decision.
+- Keep project commands Dockerized. Use `mise install` for host-side editor or standalone tooling only.
+
+## Image Targets
+
+- `dev` is the local Compose target and `ci` is the validation target.
+- `live` is the default production target; keep it as the final Dockerfile stage.
+- `distroless` is an explicit optional production target. Do not build both runtime targets by default.
+- Runtime packages installed in the slim base are not available in distroless. Projects that need them should use `live` or adapt the distroless base deliberately.
+
+## CI Permissions
+
+- Lint and build jobs must use read-only repository permissions.
+- Grant `packages: write` only to the job that publishes the production image.
+
 ## Project Structure
 
 This is a Ruby gem with the following structure:

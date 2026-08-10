@@ -1,53 +1,39 @@
-# See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
-
-# Ignore bundler config.
-/.bundle
-
-# Ignore all default key files
-config/master.key
-config/credentials/*.key
-
-# Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
-
-.github
-.gitignore
-.git
-.gitmodules
-
-# Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
-
-# Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
-
-/db/seeds.rb
-
-/public/assets
-
-.vscode
-.devcontainer
-
-/*.pdf
-/*.yml
-/*.ipynb
-
-Dockerfile
-compose.*
-dockerized*
-justfile
-**/*.md
+# Ignore all hidden files and directories (.git, .github, .vscode, .bundle, .env)
 .*
-.ruby-lsp
-*.gemspec
-bin/lefthook
-lefthook.yml
+!.
+
+# Documentation and repository configuration
+/AGENTS.md
+/README.md
+/docs/
+/Dockerfile
+/dockerized.sh
+/justfile
+/Justfile
+/LICENSE
+/bin/lefthook
+
+# Repository configuration not required by the image
+/*.toml
+/*.yml
+/*.yaml
+
+# Project metadata not required by the image
+/skills-lock.json
+
+# Test and type-signature sources not required by the image
+/test/
+/spec/
+/sig/
+/data/
+
+# Logs, temporary files, storage, keys
+/log/
+/tmp/
+/coverage/
+/vendor/
+/node_modules/
+/config/master.key
+/config/credentials/*.key
+/storage/
+/public/assets/

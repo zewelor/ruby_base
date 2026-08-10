@@ -23,6 +23,7 @@
       matchPackageNames: [
         'ghcr.io/zewelor/ruby',
       ],
+      groupName: 'Ruby runtime',
       automerge: true,
       automergeType: 'branch',
       labels: [

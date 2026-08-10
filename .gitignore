@@ -13,5 +13,6 @@
 
 .env
 
-# It will be added during initial setup
+# The starter does not commit a lockfile; Docker build stages create it
+# transiently for the runtime image.
 Gemfile.lock

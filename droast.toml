@@ -1,0 +1,3 @@
+# DF077 is a false positive for intentional COPY . with filtered context.
+# Track upstream fix: https://github.com/immanuwell/dockerfile-roast/issues/55
+skip = ["DF077"]
