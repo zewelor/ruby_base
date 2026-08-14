@@ -13,8 +13,7 @@ permissions:
 env:
   COMPOSE_DOCKER_CLI_BUILD: 1
   COMPOSE_FILE: compose.ci.yaml
-  # It counts attestation packages; each commit gives three packages.
-  OLD_VERSIONS_TO_KEEP: 75  # 25 commits
+  OLD_VERSIONS_TO_KEEP: 10
   DOCKER_BUILD_CHECKS_ANNOTATIONS: false
 
 jobs:
