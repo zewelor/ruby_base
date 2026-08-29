@@ -49,6 +49,9 @@ lefthook run pre-commit
 
 - The Dockerfile base-image tags are the source of truth for the Ruby version.
 - The `slim` and `trixie-distroless` base images must use the same Ruby version.
+- Keep `BUNDLE_VERSION=system` in every independent Ruby runtime stage. The
+  image-provided Bundler is the runtime contract; `BUNDLED WITH` is generated
+  lockfile metadata and must not be manually aligned with the image.
 - Renovate updates the Ruby Docker image tags directly in the Dockerfile.
 - This starter project begins without `Gemfile.lock`; keep it ignored. Docker build stages generate a transient lockfile for the runtime image. Commit a lockfile only as an explicit project decision.
 - Keep project commands Dockerized. Use `mise install` for host-side editor or standalone tooling only.

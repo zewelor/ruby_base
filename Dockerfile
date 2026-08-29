@@ -8,6 +8,7 @@ ARG RUNTIME_PACKAGES
 # We mount whole . dir into app, so vendor/bundle would get overwritten
 ENV DEBIAN_FRONTEND=noninteractive \
   BUNDLE_PATH=/bundle \
+  BUNDLE_VERSION=system \
   GEM_HOME=/bundle
 
 # install runtime dependencies
@@ -85,6 +86,7 @@ RUN set -eux; \
 FROM ghcr.io/zewelor/ruby:4.0.6-trixie-distroless AS distroless
 
 ENV BUNDLE_PATH=/bundle \
+  BUNDLE_VERSION=system \
   GEM_HOME=/bundle \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \

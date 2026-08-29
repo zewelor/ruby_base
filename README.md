@@ -10,6 +10,10 @@ updates those Docker tags directly. Project commands still run through
 The starter does not commit `Gemfile.lock`. Docker build stages create a
 transient lockfile for the runtime image.
 
+All runtime stages use the Bundler provided by their Ruby image. A derived
+project may commit the generated `BUNDLED WITH` metadata, but must not require
+that writer version to be installed in the runtime image.
+
 ## Image targets
 
 Local development uses `dev`; CI validates `ci` and builds the default `live`
