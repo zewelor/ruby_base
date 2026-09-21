@@ -7,7 +7,9 @@ permissions:
 "on":
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
+      - renovate/**
   pull_request:
 
 env:
@@ -56,7 +58,9 @@ jobs:
           docker compose run --rm app bundle exec standardrb
 
   build_production:
-    if: github.event_name != 'push'
+    if: >-
+      github.event_name == 'pull_request' ||
+      startsWith(github.ref, 'refs/heads/renovate/')
     needs:
       - tests
     runs-on: ubuntu-latest
@@ -82,7 +86,7 @@ jobs:
             GIT_CODE_VERSION=${{ github.sha }}
 
   publish_production:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
