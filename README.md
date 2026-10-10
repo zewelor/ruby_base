@@ -1,5 +1,21 @@
 # Readme
 
+## Local Docker
+
+Local development requires rootless Docker. Compose uses container UID/GID
+`0:0`, which maps to the unprivileged host user. The runner checks the actual
+daemon before every invocation; use the sourced aliases or
+`./dockerized.sh compose ...`. Direct `docker compose` calls bypass this check.
+VS Code Dev Containers checks the daemon during initialization. CI keeps its
+separate Compose file and image user.
+
+The read-only root filesystem, dropped capabilities and no-new-privileges remain
+in effect. `/tmp` is writable and is the local home/cache directory. Fresh
+`bundler_rootless` and `vscode_rootless` volumes skip copying image UID 1000
+ownership, allowing writes without additional capabilities. Existing `bundler`
+and `vscode` volumes are preserved; local dependencies install into the new
+volume. Run `just runner-checks` to test the startup guard with a fake daemon.
+
 ## Ruby version
 
 The Dockerfile base-image tags are the source of truth for the Ruby version.

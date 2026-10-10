@@ -5,7 +5,13 @@ services:
       context: .
       target: dev
     tty: true
-    user: "${UID:-1000}:${GID:-1000}"
+    # Container root maps to the unprivileged rootless daemon user.
+    user: "0:0"
+    environment:
+      HOME: /tmp
+      VSCODE_AGENT_FOLDER: /tmp/.vscode-server
+    tmpfs:
+      - /tmp:mode=1777,exec
     stdin_open: true
     read_only: true
     cap_drop:
@@ -14,9 +20,18 @@ services:
       - no-new-privileges:true
     volumes:
       - .:/app:cached
-      - bundler:/bundle
-      - vscode:/home/app/.vscode-server
+      # Empty volumes start owned by container root; do not copy image UID 1000.
+      - type: volume
+        source: bundler_rootless
+        target: /bundle
+        volume:
+          nocopy: true
+      - type: volume
+        source: vscode_rootless
+        target: /tmp/.vscode-server
+        volume:
+          nocopy: true
 
 volumes:
-  vscode:
-  bundler:
+  vscode_rootless:
+  bundler_rootless:

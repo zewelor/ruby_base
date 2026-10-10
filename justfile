@@ -1,5 +1,5 @@
 docker_build:
-  docker compose build --no-cache
+  ./dockerized.sh compose build --no-cache
 
 # Use Docker's own context filtering so `!` rules are evaluated correctly.
 show_dockerignore:
@@ -27,3 +27,6 @@ show_dockerignore:
   printf '\n%s\n' '---'
   printf 'Total files:\t%s\n' "$(wc -l < "$test_dir/included" | awk '{print $1}')"
   printf 'Total size:\t%s\n' "$(du -sh "$test_dir/context/context" | awk '{print $1}')"
+
+runner-checks:
+  ./dockerized.sh compose run --rm --no-deps app bash test/dockerized_runner_test.sh
