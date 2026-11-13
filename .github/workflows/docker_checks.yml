@@ -18,6 +18,10 @@ env:
   OLD_VERSIONS_TO_KEEP: 10
   DOCKER_BUILD_CHECKS_ANNOTATIONS: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   tests:
     runs-on: ubuntu-latest
