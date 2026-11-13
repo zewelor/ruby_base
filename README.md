@@ -1,5 +1,10 @@
 # Readme
 
+## Publication
+
+CI validates and publishes the `live` image for every push to `main`.
+The image is tagged with the published commit SHA.
+
 ## Local Docker
 
 Local development requires rootless Docker. Compose uses container UID/GID
