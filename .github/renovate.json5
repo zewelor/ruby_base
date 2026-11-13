@@ -2,6 +2,7 @@
   extends: [
     'config:recommended',
     ':dependencyDashboard',
+    'github>zewelor/renovate-config//presets/ruby-images',
   ],
   timezone: 'Europe/Warsaw',
   vulnerabilityAlerts: {
@@ -24,8 +25,6 @@
         'ghcr.io/zewelor/ruby',
       ],
       groupName: 'Ruby runtime',
-      automerge: true,
-      automergeType: 'branch',
       labels: [
         'renovate/image-release',
         'dependency/patch',
