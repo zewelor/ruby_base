@@ -2,6 +2,7 @@
   extends: [
     'config:recommended',
     ':dependencyDashboard',
+    'github>zewelor/renovate-config//presets/ruby-images',
   ],
   ignorePaths: [
     '.github/workflows',
@@ -58,8 +59,6 @@
       matchPackageNames: [
         'ghcr.io/zewelor/ruby',
       ],
-      automerge: true,
-      automergeType: 'branch',
       labels: [
         'renovate/image-release',
         'dependency/patch',
