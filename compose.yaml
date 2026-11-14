@@ -24,10 +24,10 @@ services:
         target: ${PWD:?Run Compose from the project root}
       # Empty volumes start owned by container root; do not copy image UID 1000.
       - type: volume
-        source: bundler_rootless
+        source: bundler
         target: /bundle
         volume:
           nocopy: true
 
 volumes:
-  bundler_rootless:
+  bundler:

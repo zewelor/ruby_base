@@ -18,8 +18,9 @@ this check. CI keeps its separate Compose file and image user.
 
 The read-only root filesystem, dropped capabilities and no-new-privileges remain
 in effect. `/tmp` is writable and is the local home/cache directory. The fresh
-`bundler_rootless` volume skips copying image UID 1000 ownership, allowing writes
-without additional capabilities. Existing cache volumes are preserved. Run
+`bundler` volume skips copying image UID 1000 ownership, allowing writes
+without additional capabilities. Existing cache volumes are preserved; switching
+from `bundler_rootless` creates a fresh gem cache. Run
 `just runner-checks` to test the startup guard with a fake daemon.
 
 ## Ruby version
