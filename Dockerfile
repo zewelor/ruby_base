@@ -3,6 +3,8 @@ ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
 FROM ghcr.io/zewelor/ruby:4.0.9-slim@sha256:3c6da6eb407da3f5b34a770e378d781c7f6e6da2aba9aba24114a5a2b6c09f50 AS base
 
+WORKDIR /app
+
 ARG RUNTIME_PACKAGES
 
 # We mount whole . dir into app, so vendor/bundle would get overwritten
@@ -16,6 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
 # hadolint ignore=SC2086,DL3008
 RUN set -eux; \
+    chown app:app /app; \
     if [ -n "$RUNTIME_PACKAGES" ]; then \
       apt-get update; \
       apt-get install -y --no-install-recommends $RUNTIME_PACKAGES; \
@@ -42,6 +45,8 @@ RUN set -eux; \
     rm -rf /tmp/* /var/tmp/*
 
 FROM basedev AS dev
+
+WORKDIR /
 
 ENV BUNDLE_AUTO_INSTALL=true \
     BUNDLE_CLEAN=true
