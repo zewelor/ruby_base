@@ -8,24 +8,19 @@ The image is tagged with the published commit SHA.
 ## Local Docker
 
 Local development requires rootless Docker. Compose uses container UID/GID
-`0:0`, which maps to the unprivileged host user. The runner checks the actual
-daemon before every invocation; use the sourced aliases or
-`./dockerized.sh compose ...`. Direct `docker compose` calls bypass this check.
-VS Code Dev Containers checks the daemon during initialization. CI keeps its
-separate Compose file and image user.
-Local Compose loads `compose.override.yaml`; run it from the project root. The
-checkout is mounted once, at its absolute host path, which is also its working
-directory. VS Code uses `${localWorkspaceFolder}` for its mount and workspace,
-so opening a Dev Container does not depend on the directory VS Code started in.
-The explicit Dev Container Compose file list excludes the local CLI override.
-The production and CI image layouts still use `/app`.
+`0:0`, which maps to the unprivileged host user. Run local commands from the
+project root: `compose.yaml` mounts the checkout once at its absolute host path
+and uses that path as the working directory. CI and production keep `/app`.
+
+The runner checks the actual daemon before every invocation; use the sourced
+aliases or `./dockerized.sh compose ...`. Direct `docker compose` calls bypass
+this check. CI keeps its separate Compose file and image user.
 
 The read-only root filesystem, dropped capabilities and no-new-privileges remain
-in effect. `/tmp` is writable and is the local home/cache directory. Fresh
-`bundler_rootless` and `vscode_rootless` volumes skip copying image UID 1000
-ownership, allowing writes without additional capabilities. Existing `bundler`
-and `vscode` volumes are preserved; local dependencies install into the new
-volume. Run `just runner-checks` to test the startup guard with a fake daemon.
+in effect. `/tmp` is writable and is the local home/cache directory. The fresh
+`bundler_rootless` volume skips copying image UID 1000 ownership, allowing writes
+without additional capabilities. Existing cache volumes are preserved. Run
+`just runner-checks` to test the startup guard with a fake daemon.
 
 ## Ruby version
 

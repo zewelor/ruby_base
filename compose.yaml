@@ -4,12 +4,12 @@ services:
     build:
       context: .
       target: dev
+    working_dir: ${PWD:?Run Compose from the project root}
     tty: true
     # Container root maps to the unprivileged rootless daemon user.
     user: "0:0"
     environment:
       HOME: /tmp
-      VSCODE_AGENT_FOLDER: /tmp/.vscode-server
     tmpfs:
       - /tmp:mode=1777,exec
     stdin_open: true
@@ -19,18 +19,15 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
+      - type: bind
+        source: .
+        target: ${PWD:?Run Compose from the project root}
       # Empty volumes start owned by container root; do not copy image UID 1000.
       - type: volume
         source: bundler_rootless
         target: /bundle
         volume:
           nocopy: true
-      - type: volume
-        source: vscode_rootless
-        target: /tmp/.vscode-server
-        volume:
-          nocopy: true
 
 volumes:
-  vscode_rootless:
   bundler_rootless:
