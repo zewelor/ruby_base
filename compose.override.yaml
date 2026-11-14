@@ -1,0 +1,7 @@
+services:
+  app:
+    working_dir: ${PWD:?Run Compose from the project root}
+    volumes:
+      - type: bind
+        source: .
+        target: ${PWD:?Run Compose from the project root}

@@ -19,7 +19,6 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - .:/app:cached
       # Empty volumes start owned by container root; do not copy image UID 1000.
       - type: volume
         source: bundler_rootless

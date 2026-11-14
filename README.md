@@ -13,6 +13,12 @@ daemon before every invocation; use the sourced aliases or
 `./dockerized.sh compose ...`. Direct `docker compose` calls bypass this check.
 VS Code Dev Containers checks the daemon during initialization. CI keeps its
 separate Compose file and image user.
+Local Compose loads `compose.override.yaml`; run it from the project root. The
+checkout is mounted once, at its absolute host path, which is also its working
+directory. VS Code uses `${localWorkspaceFolder}` for its mount and workspace,
+so opening a Dev Container does not depend on the directory VS Code started in.
+The explicit Dev Container Compose file list excludes the local CLI override.
+The production and CI image layouts still use `/app`.
 
 The read-only root filesystem, dropped capabilities and no-new-privileges remain
 in effect. `/tmp` is writable and is the local home/cache directory. Fresh

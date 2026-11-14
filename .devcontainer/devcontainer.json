@@ -14,10 +14,12 @@
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/compose.yml to the real service name.
 	"service": "app",
+	// Keep namespace UID 0, which maps to the host user with rootless Docker.
+	"updateRemoteUserUID": false,
 
-	// The optional 'workspaceFolder' property is the path VS Code should open by default when
-	// connected. This is typically a file mount in .devcontainer/compose.yml
-	"workspaceFolder": "/app"
+	// Use the same absolute project path inside the container and on the host.
+	"workspaceFolder": "${localWorkspaceFolder}",
+	"mounts": ["source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind"]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
