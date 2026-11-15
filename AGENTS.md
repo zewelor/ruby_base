@@ -53,7 +53,7 @@ lefthook run pre-commit
   image-provided Bundler is the runtime contract; `BUNDLED WITH` is generated
   lockfile metadata and must not be manually aligned with the image.
 - Renovate updates the Ruby Docker image tags directly in the Dockerfile.
-- This starter project begins without `Gemfile.lock`; keep it ignored. Docker build stages generate a transient lockfile for the runtime image. Commit a lockfile only as an explicit project decision.
+- This starter project begins without `Gemfile.lock`; keep it ignored. Docker build stages generate a transient lockfile for the runtime image. `./dockerized.sh setup` builds the local app image, runs `bundle install`, and may generate the ignored local lockfile required by editor startup; rerun it after Gemfile changes. `./dockerized.sh lsp` requires the prepared lockfile, cache, and image and never installs dependencies on editor startup. Commit a lockfile only as an explicit project decision.
 - Keep project commands Dockerized. Use `mise install` for host-side editor or standalone tooling only.
 
 ## Image Targets
