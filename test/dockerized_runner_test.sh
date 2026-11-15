@@ -77,4 +77,5 @@ if [[ "$failures" -gt 0 ]]; then
   printf '%s runner checks failed\n' "$failures" >&2
   exit 1
 fi
+bash "$(dirname "$0")/dockerized_editor_test.sh" "$runner"
 echo 'Runner checks passed (run, exec, rootful, unavailable, CI override, ps failure, recheck, argument forwarding).'

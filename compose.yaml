@@ -1,15 +1,23 @@
 ---
 services:
   app:
+    image: "${COMPOSE_PROJECT_NAME:?Run through dockerized.sh}-app"
     build:
       context: .
       target: dev
     working_dir: ${PWD:?Run Compose from the project root}
     tty: true
+    init: true
     # Container root maps to the unprivileged rootless daemon user.
     user: "0:0"
     environment:
       HOME: /tmp
+      BUNDLE_PATH: "${DOCKER_BUNDLE_DIR:?Run through dockerized.sh}"
+      GEM_HOME: "${DOCKER_BUNDLE_DIR:?Run through dockerized.sh}"
+      XDG_CACHE_HOME: "${DOCKER_CACHE_DIR:?Run through dockerized.sh}"
+      RUBOCOP_CACHE_ROOT: "${DOCKER_CACHE_DIR:?Run through dockerized.sh}/rubocop"
+      BUNDLE_IGNORE_CONFIG: "true"
+      BUNDLE_AUTO_INSTALL: "false"
     tmpfs:
       - /tmp:mode=1777,exec
     stdin_open: true
@@ -22,12 +30,24 @@ services:
       - type: bind
         source: .
         target: ${PWD:?Run Compose from the project root}
-      # Empty volumes start owned by container root; do not copy image UID 1000.
-      - type: volume
-        source: bundler
-        target: /bundle
-        volume:
-          nocopy: true
+        bind:
+          create_host_path: false
 
-volumes:
-  bundler:
+  editor:
+    extends:
+      service: app
+    profiles:
+      - editor
+    network_mode: none
+    # No build definition: --pull never cannot fall back to building an editor image.
+    build: !reset null
+    ports: !reset []
+    env_file: !reset []
+    entrypoint: !reset []
+    command:
+      - bundle
+      - exec
+      - ruby-lsp
+    environment:
+      BUNDLE_FROZEN: "true"
+      BUNDLE_GEMFILE: "${PWD:?Run through dockerized.sh}/Gemfile"

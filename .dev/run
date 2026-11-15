@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bin_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+project_root="$(cd -- "$bin_dir/../.." && pwd -P)"
+command="${0##*/}"
+
+case "$command" in
+  ruby-lsp)
+    exec "$project_root/dockerized.sh" lsp "$@"
+    ;;
+  *)
+    exec "$project_root/dockerized.sh" "$command" "$@"
+    ;;
+esac
