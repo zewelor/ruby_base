@@ -123,7 +123,7 @@ dockerized_setup() (
     exit 1
   }
   docker compose --progress quiet build app || exit
-  exec docker compose --progress quiet run --rm --no-deps -T --entrypoint '' app bundle install
+  exec docker compose --progress quiet run --rm --no-deps -T app bundle install
 )
 
 # A prepared bundle is required: opening an editor must never build or install.

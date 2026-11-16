@@ -7,7 +7,6 @@ services:
       target: dev
     working_dir: ${PWD:?Run Compose from the project root}
     tty: true
-    init: true
     # Container root maps to the unprivileged rootless daemon user.
     user: "0:0"
     environment:

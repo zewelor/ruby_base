@@ -159,7 +159,7 @@ reset_calls
 export DOCKER_TEST_REQUIRE_SETUP_DIRS=true
 check bash -c 'cd "$1" && "$2" setup' bash "$outside" "$runner"
 check assert_call_args 1 compose --progress quiet build app
-check assert_call_args 2 compose --progress quiet run --rm --no-deps -T --entrypoint '' app bundle install
+check assert_call_args 2 compose --progress quiet run --rm --no-deps -T app bundle install
 check test -d "$expected_bundle"
 check test -d "$expected_cache_dir"
 check assert_env_value 2 PWD "$project"
