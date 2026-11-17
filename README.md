@@ -1,7 +1,7 @@
 # Ruby base projects
 
 ## Ruby Base Clone and Rename
-This repository provides a bash script, clone_and_rename, which clones a specified Ruby base repository and then renames certain predefined elements.
+This repository provides a Ruby script, clone_and_rename, which clones the Ruby base repository and renames certain predefined elements.
 
 The script performs the following operations:
 
@@ -10,6 +10,7 @@ The script performs the following operations:
 3. Renames any files or directories within the new directory that start with "base_projects" to start with the user-provided name.
 4. Replaces any occurrences of "BaseProject" in the files within the new directory with the CamelCase version of the user-provided name.
 5. Replaces any occurrences of "base_projects" in the files within the new directory with the user-provided name.
+6. Preserves the template's Docker and lockfile policies.
 
 ### Usage
 To use the script, you need to download it and make it executable. Here's a one-liner that accomplishes this, runs the script, and then deletes it:

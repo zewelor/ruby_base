@@ -16,27 +16,6 @@ def display_help
   puts '  -h, --help   display this help and exit'
 end
 
-def update_dockerfile(dir_path)
-  dockerfile_path = "#{dir_path}/Dockerfile"
-
-  # Read the Dockerfile content
-  dockerfile_content = File.read(dockerfile_path)
-
-  # Define the line to search for and the new line to replace it with
-  search_line = 'COPY --chown=app:app Gemfile ./'
-  replace_line = 'COPY --chown=app:app Gemfile Gemfile.lock ./'
-
-  # Check if the line exists in the Dockerfile
-  raise "Line not found in Dockerfile: #{search_line}" unless dockerfile_content.include?(search_line)
-
-  # Replace the line
-  new_dockerfile_content = dockerfile_content.gsub(search_line, replace_line)
-  # Write the modified content back to the Dockerfile
-  File.write(dockerfile_path, new_dockerfile_content)
-
-  # Raise an error if the line is not found
-end
-
 # Parse options
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [options] [NEW_NAME]"
@@ -63,7 +42,7 @@ NEW_NAME_CAMEL = NEW_NAME.tr('-', '_').split('_').map(&:capitalize).join
 
 # Function to clone repository
 def clone_repository(new_name)
-  system("git clone --depth 1 https://github.com/zewelor/ruby_base.git -b ruby-cli #{new_name}")
+  system('git', 'clone', '--depth', '1', '-b', 'ruby-cli', 'https://github.com/zewelor/ruby_base.git', new_name, exception: true)
 end
 
 # Clone repository
@@ -96,9 +75,6 @@ if Dir.exist?(dir_path)
     content.gsub!(OLD_NAME, new_file_name)
     File.write(file, content)
   end
-
-  # Update Dockerfile
-  update_dockerfile(dir_path)
 else
   puts 'Directory does not exist'
 end
