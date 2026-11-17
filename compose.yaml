@@ -2,10 +2,11 @@
 services:
   app:
     image: "${COMPOSE_PROJECT_NAME:?Run through dockerized.sh}-app"
+    pull_policy: never
     build:
       context: .
       target: dev
-    working_dir: ${PWD:?Run Compose from the project root}
+    working_dir: ${DOCKER_PROJECT_DIR:?Run through dockerized.sh}
     tty: true
     # Container root maps to the unprivileged rootless daemon user.
     user: "0:0"
@@ -16,7 +17,8 @@ services:
       XDG_CACHE_HOME: "${DOCKER_CACHE_DIR:?Run through dockerized.sh}"
       RUBOCOP_CACHE_ROOT: "${DOCKER_CACHE_DIR:?Run through dockerized.sh}/rubocop"
       BUNDLE_IGNORE_CONFIG: "true"
-      BUNDLE_AUTO_INSTALL: "false"
+      BUNDLE_FROZEN: "true"
+      BUNDLE_GEMFILE: "${DOCKER_PROJECT_DIR:?Run through dockerized.sh}/Gemfile"
     tmpfs:
       - /tmp:mode=1777,exec
     stdin_open: true
@@ -28,7 +30,12 @@ services:
     volumes:
       - type: bind
         source: .
-        target: ${PWD:?Run Compose from the project root}
+        target: ${DOCKER_PROJECT_DIR:?Run through dockerized.sh}
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${DOCKER_GIT_COMMON_DIR:?Run through dockerized.sh}
+        target: ${DOCKER_GIT_COMMON_DIR:?Run through dockerized.sh}
         bind:
           create_host_path: false
 
@@ -43,10 +50,10 @@ services:
     ports: !reset []
     env_file: !reset []
     entrypoint: !reset []
+    # Editor startup uses the prepared bundle without installing dependencies.
+    environment:
+      BUNDLE_AUTO_INSTALL: "false"
     command:
       - bundle
       - exec
       - ruby-lsp
-    environment:
-      BUNDLE_FROZEN: "true"
-      BUNDLE_GEMFILE: "${PWD:?Run through dockerized.sh}/Gemfile"

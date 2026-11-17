@@ -12,38 +12,28 @@ You are an expert Ruby developer specializing in creating clean, maintainable, a
 
 ## Docker Environment
 
-This project is fully containerized. **ALWAYS** run commands through the Docker environment using `dockerized.sh`.
+Run project commands through `./dockerized.sh COMMAND [ARG...]` or a `just` recipe.
+Use native command syntax, for example `./dockerized.sh bundle exec standardrb`
+and `just runner-checks`. Do not source the runner, add wrappers to `PATH`, or
+fall back to host Ruby tools.
 
-### Setup
+Use `just setup` for a fresh checkout or after Gemfile changes. It builds the local
+image, prepares the local lockfile and installs gems and Git hooks. Routine commands
+require that prepared image and lockfile; they do not build or pull images.
+Bundler automatically installs missing development gems into the project bundle
+and stops the command if installation fails. The lockfile stays frozen.
+Deliberate dependency maintenance uses
+`./dockerized.sh env BUNDLE_FROZEN=false bundle install` (or `bundle update`).
+Define auto-install defaults in the Dockerfile's dev and production stages.
+Compose inherits the dev default for app; editor explicitly disables installation
+and requires a prepared bundle. Production never installs gems at startup.
 
-Source the dockerized script to set up aliases:
-
-```bash
-source dockerized.sh
-```
-
-### Available Aliases
-
-After sourcing, these commands run inside Docker:
-- `ruby` - Ruby interpreter
-- `bundle` - Bundler
-- `rake` - Rake tasks
-- `standardrb` - Ruby linter (StandardRB)
-- `lefthook` - Git hooks manager
-
-### Running Commands
-
-Always use the dockerized environment:
-
-```bash
-# Set up aliases first
-source dockerized.sh
-
-# Then run commands
-rake test
-standardrb --fix
-lefthook run pre-commit
-```
+The local runner requires rootless Docker and its Compose plugin. It anchors
+Compose resources to this checkout and preserves the caller's directory for
+commands inside it; invocations from outside the checkout fail. `just` recipes
+run at the project root. Use `./dockerized.sh compose ...` for explicit service
+administration. See [Local Docker](README.md#local-docker) for setup, cleanup and
+manual editor/LSP configuration.
 
 ## Ruby Version Contract
 
@@ -82,7 +72,7 @@ ruby_base/
 │   └── cli                       # CLI executable
 ├── Gemfile                       # Dependencies
 ├── compose.yaml                  # Docker Compose config
-├── dockerized.sh                 # Docker aliases setup
+├── dockerized.sh                 # Explicit Docker command runner
 ├── lefthook.yml                  # Git hooks configuration
 └── .rubocop.yml                  # StandardRB configuration
 ```
@@ -166,10 +156,10 @@ This project uses **StandardRB** (not RuboCop) for consistent Ruby code style.
 
 ```bash
 # Check style
-source dockerized.sh && standardrb
+./dockerized.sh bundle exec standardrb
 
 # Auto-fix issues
-source dockerized.sh && standardrb --fix
+./dockerized.sh bundle exec standardrb --fix
 ```
 
 ### Pre-commit Hooks
@@ -187,7 +177,7 @@ Lefthook manages Git hooks to ensure code quality before commits.
 ### Manual Execution
 
 ```bash
-source dockerized.sh && lefthook run pre-commit
+./bin/lefthook run pre-commit
 ```
 
 ## Testing Guidelines

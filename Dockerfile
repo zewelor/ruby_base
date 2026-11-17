@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
@@ -35,12 +37,13 @@ ARG DEV_PACKAGES
 # SC2086: Double quote to prevent globbing - intentionally unquoted for word splitting
 # DL3008: Pin versions in apt-get - versions come from ARG, pinning not practical
 # hadolint ignore=SC2086,DL3008
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    set -eux; \
+    rm -f /etc/apt/apt.conf.d/docker-clean; \
     if [ -n "$DEV_PACKAGES" ]; then \
       apt-get update; \
       apt-get install -y --no-install-recommends $DEV_PACKAGES; \
-      apt-get clean; \
-      rm -rf /var/lib/apt/lists/*; \
     fi; \
     rm -rf /tmp/* /var/tmp/*
 
@@ -48,7 +51,7 @@ FROM basedev AS dev
 
 WORKDIR /
 
-ENV BUNDLE_AUTO_INSTALL=false \
+ENV BUNDLE_AUTO_INSTALL=true \
     BUNDLE_CLEAN=true
 
 RUN mkdir -p "$BUNDLE_PATH" && \
@@ -93,6 +96,7 @@ FROM ghcr.io/zewelor/ruby:4.0.9-trixie-distroless@sha256:1767a3e824fda3115a904e5
 ENV BUNDLE_PATH=/bundle \
   BUNDLE_VERSION=system \
   GEM_HOME=/bundle \
+  BUNDLE_AUTO_INSTALL=false \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_WITHOUT="development:test" \
   RUBYOPT='--disable-did_you_mean'
@@ -110,6 +114,7 @@ FROM base AS live
 
 # We enable `BUNDLE_DEPLOYMENT` so that bundler won't take the liberty to upgrade any gems.
 ENV BUNDLE_DEPLOYMENT="1" \
+  BUNDLE_AUTO_INSTALL=false \
   BUNDLE_WITHOUT="development:test" \
   RUBYOPT='--disable-did_you_mean'
 

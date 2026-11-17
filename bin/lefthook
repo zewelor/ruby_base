@@ -1,8 +1,6 @@
 #!/bin/sh
+set -eu
 
-if docker compose ps | grep -q app
-then
-  docker compose --progress quiet exec -T app bundle exec lefthook "$@"
-else
-  docker compose --progress quiet run --rm -T app bundle exec lefthook "$@"
-fi
+project_root="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)"
+cd -- "$project_root"
+exec "$project_root/dockerized.sh" bundle exec lefthook "$@"

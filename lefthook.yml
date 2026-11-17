@@ -1,3 +1,6 @@
+# Installed Git hooks enter Docker before running Lefthook or Ruby commands.
+lefthook: ./bin/lefthook
+
 pre-commit:
   commands:
     standardrb:

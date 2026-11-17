@@ -1,3 +1,6 @@
+setup:
+  ./dockerized.sh setup
+
 docker_build:
   ./dockerized.sh compose build --no-cache
 
@@ -29,4 +32,8 @@ show_dockerignore:
   printf 'Total size:\t%s\n' "$(du -sh "$test_dir/context/context" | awk '{print $1}')"
 
 runner-checks:
-  ./dockerized.sh compose run --rm --no-deps app bash test/dockerized_runner_test.sh
+  ./dockerized.sh bash test/dockerized_runner_test.sh
+
+bundle-checks:
+  ./dockerized.sh ruby test/bundle_install_test.rb
+  ./dockerized.sh compose run --pull never --rm --no-deps -T editor ruby test/bundle_install_test.rb disabled

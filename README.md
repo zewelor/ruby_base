@@ -7,44 +7,65 @@ The image is tagged with the published commit SHA.
 
 ## Local Docker
 
-Local development requires rootless Docker. Compose uses container UID/GID
-`0:0`, which maps to the unprivileged host user. The runner resolves the project
-root from its own location, gives each checkout a stable Compose project name,
-and mounts the checkout once at its absolute host path as the working directory.
-CI and production keep `/app`.
+Install Git, Bash 4+, `sha256sum`, rootless Docker and its Compose plugin, plus
+`just` for recipes. The local daemon must be able to bind-mount the checkout at its
+absolute host path.
+Local containers run as UID/GID `0:0`, which maps to the unprivileged daemon user.
+The runner checks the daemon on every invocation and refuses rootful or unavailable
+Docker. Host Ruby and Bundler are not required.
 
-Use `./dockerized.sh setup` to build the `app` development image and run
-`bundle install`. It prepares the ignored bundle at `.bundle/gems` and cache
-directory at `.dev/cache` as the invoking user, and may write the ignored local
-`Gemfile.lock`. App containers use `.dev/cache` for XDG caches and
-`.dev/cache/rubocop` for RuboCop. Run setup after changing the Gemfile. Use
-`./dockerized.sh lsp` for the editor Ruby LSP; it requires the prepared lock,
-bundle and image and does not build, pull, or install dependencies on startup.
-Sourcing the runner only configures the project `PATH`; it does not create
-caches or install tools.
+```bash
+just setup
+./dockerized.sh bundle exec standardrb
+just runner-checks
+./bin/lefthook run pre-commit
+```
 
-Run setup in each checkout or cloud environment instead of copying binary bundle
-caches between machines. Existing `~/.cache/docker-bundle` data is left untouched
-and is no longer used by this project. Before deleting a checkout, stop its
-services with `./dockerized.sh compose down`. Deleting the checkout removes its
-`.bundle` and `.dev/cache`; Docker images and build layers remain separate Docker
-state and are not pruned automatically.
+Setup builds the development image, installs gems into `.bundle/gems`, prepares
+`.dev/cache`, creates or updates the ignored local `Gemfile.lock`, and installs
+Lefthook's Git hooks. Installed hooks call `bin/lefthook` to enter Docker before
+running Ruby tools. Re-run setup after changing the Gemfile.
+Ordinary commands require the prepared image and local lockfile; they never build
+or pull images. Bundler automatically installs missing gems into `.bundle/gems`,
+including after deleting the bundle cache. Installation failures stop the command
+with a visible error. The lockfile stays frozen, so changing dependencies or
+resolving them for the first time remains explicit:
 
-Sourcing `dockerized.sh` in Bash or Zsh silently prepends this checkout's
-`.dev/bin` to `PATH` and removes the previously active project bin.
-Static symlinks expose `ruby-lsp` and the supported CLI commands to child
-processes. `ruby-lsp` uses the existing prepared LSP route; wrappers do not
-install host tools.
+```bash
+./dockerized.sh env BUNDLE_FROZEN=false bundle install
+./dockerized.sh env BUNDLE_FROZEN=false bundle update <gem>
+```
 
-The runner checks the actual daemon before every invocation. Source `dockerized.sh`
-to use project wrappers, or run `./dockerized.sh compose ...`. Direct `docker compose`
-calls bypass this check and the shared project context. CI keeps its separate
-Compose file and image user.
+The development image owns the auto-install setting. Compose inherits it for app
+commands; the offline editor service explicitly disables it. Production images
+disable auto-install and use only gems installed during the image build.
+Run `just bundle-checks` to verify installation, cache reuse, visible failures and
+the editor's prepared-bundle requirement with an isolated local gem fixture.
 
-The read-only root filesystem, dropped capabilities and no-new-privileges remain
-in effect. `/tmp` is writable and is the container home. The checkout bind makes
-the bundle available at the same absolute host and container path. Run
-`just runner-checks` to test the startup guard with a fake daemon.
+Use explicit commands; the runner does not activate a shell environment or add
+wrappers to `PATH`. Arguments are passed literally and commands preserve the
+caller's directory inside the checkout. For example, from `lib`, run
+`../dockerized.sh ruby -e 'puts Dir.pwd'`. Invocations from outside the checkout
+fail. Compose configuration, project identity, bundle and caches remain anchored
+to the checkout; each checkout has its own resources. Git metadata is shared for
+linked worktrees, while their gems and caches stay isolated. Use `just` recipes
+from any subdirectory to run at the root. Use `./dockerized.sh compose ...` for explicit
+Compose administration, including deliberate builds and pulls. The runner executes
+the registered Compose plugin directly to preserve signals and command exit status.
+CI and production retain their separate `/app` layout and image user.
+
+For Ruby LSP, manually configure the editor to launch
+`/absolute/path/to/checkout/dockerized.sh lsp` with a working directory inside that
+checkout. It uses the prepared image, bundle and lockfile, with no network or app
+services, and never builds, pulls or installs gems. No host `ruby-lsp` wrapper is
+provided. The absolute checkout mount makes gem paths match the editor's paths.
+
+Run setup separately in each checkout or cloud environment. Before deleting a
+checkout, stop its services with `./dockerized.sh compose down`. Deleting it removes
+its bundle and tool caches; Docker images and build layers require separate explicit
+cleanup. Existing shared caches are left untouched. The read-only root filesystem,
+dropped capabilities, no-new-privileges and writable `/tmp` remain in effect.
+Run `just runner-checks` for isolated fake-Docker runner checks.
 
 ## Ruby version
 
