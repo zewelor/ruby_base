@@ -3,7 +3,7 @@
 ARG RUNTIME_PACKAGES=""
 ARG DEV_PACKAGES="build-essential git libyaml-dev"
 
-FROM ghcr.io/zewelor/ruby:4.0.9-slim@sha256:7fe782af8e5ca83e9a72899f245fd9fbff797f89c84e899cf355c68a21b7fda2 AS base
+FROM ghcr.io/zewelor/ruby:4.0.10-slim@sha256:d3a4b9dec63bfb98c7d5c0cc002bcac04bd8f49138624eba9b9e26ce6c6528a9 AS base
 
 WORKDIR /app
 
@@ -91,7 +91,7 @@ COPY --chown=app:app lib/ /app/lib/
 RUN set -eux; \
     chown -R 65532:65532 /bundle /app
 
-FROM ghcr.io/zewelor/ruby:4.0.9-trixie-distroless@sha256:1767a3e824fda3115a904e5d7644a192709371d33ef1ce2320c90fe7c1b41e54 AS distroless
+FROM ghcr.io/zewelor/ruby:4.0.10-trixie-distroless@sha256:dad87c3ba436c4b1b75bd6c161cad4a96ea7083ca05824c6e5d3ec30ef1c997d AS distroless
 
 ENV BUNDLE_PATH=/bundle \
   BUNDLE_VERSION=system \
