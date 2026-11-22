@@ -91,7 +91,7 @@ COPY --chown=app:app lib/ /app/lib/
 RUN set -eux; \
     chown -R 65532:65532 /bundle /app
 
-FROM ghcr.io/zewelor/ruby:4.0.10-trixie-distroless@sha256:dad87c3ba436c4b1b75bd6c161cad4a96ea7083ca05824c6e5d3ec30ef1c997d AS distroless
+FROM ghcr.io/zewelor/ruby:4.0.10-trixie-distroless@sha256:d5c9c3e2f089cc7301a0762176109c1faa20dc44684380e86f3d8b7a9b36d8b2 AS distroless
 
 ENV BUNDLE_PATH=/bundle \
   BUNDLE_VERSION=system \
